@@ -1,0 +1,47 @@
+extends layout2
+block head 
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js")
+  script.
+    window.onload = function(){ // when loads this will be called
+      Vue.use("Vuetify");
+      new Vue({
+        el: '#app',
+        data: () => ({
+          date : new Date().toISOString().substr(0, 10),
+          results:[]
+          
+        }),
+        methods:{
+          getHistory: function(id){
+            console.log(this.date);
+            console.log('getHistory() method was called for date ' + this.date.toString());
+            axios.get(`/api/dietHistory?selectedDate=${this.date}&userId=${id}`)
+            .then((response)=>{
+                console.log("This is " + response);//prints out "This is [object, Object]"
+              })
+              .catch(function(err){
+                console.log(err);
+              });
+          },
+        }
+      })
+    }
+    
+block content
+  if(user)
+    h1.display-3.text-xs-center.front-weight-bold= title
+    h2.display-1.text-xs-center Please Select a Date
+    br
+    v-card
+      v-date-picker.mt-3(v-model='date', full-width='', landscape='' color='indigo lighten-2' :max="new Date().toISOString().substr(0, 10)")
+      v-layout
+        v-flex(xs12 text-xs-center='')
+          v-btn(color='lime' v-on:click=`getHistory(${user.id})`).text-xs-center Submit {{date}}
+    br
+    v-divider
+    v-card
+      v-card-title.indigo.white--text.headline Day Information 
+      v-container
+        p {{date}}
+        
+

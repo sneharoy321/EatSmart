@@ -13,10 +13,13 @@ block head
         });
     }
 block content
-  h1.display-3 Check In
+  h1.display-3.text-xs-center.front-weight-bold Check In
   if(user)
-    v-form(method='POST')
-      v-text-field(label= "Current Weight" name="weight" v-model='user.weight') 
-      v-text-field(label= "Height" name="height" v-model='user.height') 
+    v-card
+      v-container
+        v-form(method='POST')
+          v-text-field(label= "Current Weight" name="weight" v-model='user.weight') 
+          v-text-field(label= "Height" name="height" v-model='user.height') 
 
-      v-btn(type='submit' color="green") Save
+          v-btn(type='submit' color="green") Save
+    

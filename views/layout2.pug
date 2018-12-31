@@ -16,12 +16,14 @@ html
         body{}
     #app
       v-app
-        v-toolbar(color="indigo accent-1")
+        v-toolbar(color="amber")
           v-toolbar-title Eat Smart
           div.hidden-sm-and-down
             v-btn(flat='' href='/dashboard') Dashboard
             v-btn(flat='' href='/profile') Profile
             v-btn(flat='' href='/check-in') Check in
+            v-btn(flat='' href='/diet') Diet
+            v-btn(flat='' href='/dietHistory') Diet History
         v-container
           block content
       

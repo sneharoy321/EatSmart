@@ -1,0 +1,180 @@
+extends layout
+block head
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js")
+  script.
+    window.onload = function(){ // when loads this will be called
+      Vue.use("Vuetify");
+      new Vue({ 
+        el: '#app',
+        data: function(){
+            return {
+              Date: new Date().toISOString().substr(0, 10),
+              mealTypes: ['Breakfast','Lunch','Dinner','Snack'],
+              items: [],
+              summary: {
+                'calories':0,
+                'fat':0,
+                'protein':0,
+                'carbohydrates':0
+              },
+              searchTerm:"",
+              pag:{},
+              results: [],
+              headers: [
+                {text:"name", value:"name"},
+                {text:"action", value:""}
+              ],
+            }
+        }, 
+        computed: {
+            totalCalories: function(){
+              var calories = 0;
+              for(var item of this.items){
+                calories += item.calories;
+              }
+              return calories;
+            },
+            totalFat: function(){
+              var fat = 0;
+              for(var item of this.items){
+                fat += item.fat;
+              }
+              return fat;
+            },
+            totalProtein: function(){
+              var protein = 0;
+              for(var item of this.items){
+                protein += item.protein;
+              }
+              return protein;
+            },
+            totalCarbohydrates: function(){
+              var carbs = 0;
+              for(var item of this.items){
+                carbs += item.carbohydrate;
+              }
+              return carbs;
+            }
+        },
+        methods:{
+          clear:function(){
+            console.log("clear method called")
+            this.items=[];
+          },
+          increment:function(){
+            this.pag.page++;
+          },
+          decrement:function(){
+            if(this.pag.page > 1){
+              this.pag.page--;
+            }
+          },
+          delete:function(item){
+            console.log("delete method called")
+            var index = this.items.indexOf(item);
+            //Vue.delete(this.items, index);
+          },
+          onSearch:function(){
+            console.log("searching for " + this.searchTerm)
+            axios.get("/api/food?search=" + this.searchTerm)
+              .then((response)=>{
+                this.results= response.data.list.item;
+              })
+              .catch(function(err){
+                console.log(err);
+              });
+          },
+          onSelect(item){
+            console.log(JSON.stringify(item));
+
+            //have now added it to the items array
+            axios.get("/api/food/" + item.ndbno)
+              .then((response)=>{
+                console.log(response);
+                var food = response.data.foods[0].food;
+                var item = {
+                  "nbdno": food.desc.ndbno,
+                  "name": food.desc.name
+                };
+                console.log(food.nutrients);
+                for(var nutrient of food.nutrients){
+                  console.log(nutrient.name);
+                  switch(nutrient.name){//passing in variable
+                    case 'Protein':// kinda like an if
+                      item.protein=  Math.round( parseFloat(nutrient.value));//rounds
+                      break;
+                    case 'Total lipid (fat)':
+                      item.fat= Math.round( parseFloat(nutrient.value));//rounds
+                      break;
+                    case 'Carbohydrate, by difference':
+                      item.carbohydrate= Math.round( parseFloat(nutrient.value));//rounds
+                      break;
+                    case 'Energy':
+                      item.calories= Math.round( parseFloat(nutrient.value));//rounds
+                      break;
+                    default://do nothing
+                      break;
+                  }
+                }
+                
+
+                this.items.push(item);
+                
+              })
+              .catch(function(err){
+                console.log(err);
+              });
+
+          }
+        }
+      });
+    }
+block content
+  h1 Log Your Food
+  v-container(grid-list-md='',text-xs-center='')
+    v-layout(row, wrap)
+      v-flex.grey(xs12)
+        h1 Meal
+        div
+          v-layout(row='', wrap='')
+          v-container(fluid='', grid-list-xl='')
+            v-layout(wrap='', align-center='')
+              v-flex(xs12='', sm6='', d-flex='')
+                v-select(:items='mealTypes', label='Meal Type' solo)
+      v-flex.grey(xs9)
+        h1 List of Items
+        v-container.lime
+          table
+            thead
+              tr
+                th  Item Name        
+                th
+                  v-btn(v-on:click="clear()"  color='light-blue accent-1') Clear
+            tr(v-for='item in items')
+              td {{item.name}}    
+              td
+                v-btn(v-on:click="delete(item)"  color='red').v-icon='delete'
+      v-flex.grey(xs3)
+        h1 Summary
+        v-container.lime
+          p # items: {{items.length}}
+          p Calories: {{totalCalories}} kcal
+          p Fat: {{totalFat}} g
+          p Carbohydrates: {{totalCarbohydrates}} g
+          p Protein: {{totalProtein}} g
+    v-layout(row,wrap)
+      v-flex.grey(xs12)
+        h1 Search
+        v-form
+          v-container
+            v-text-field(solo v-model="searchTerm" label='Food Name' append-icon='search')
+            v-btn(v-on:click="onSearch") Search
+            v-btn(v-on:click="increment") Next Page
+            v-btn(v-on:click="decrement") Previous Page
+            h1 Search Results
+            v-data-table(:headers="headers" :items="results" :pagination.sync="pag")
+              template(slot="items" slot-scope="props")
+                td {{props.item.name}}
+                td
+                  v-btn(v-on:click="onSelect(props.item)") Select
+

@@ -1,0 +1,33 @@
+extends layout
+block head
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js")
+  script.
+    window.onload = function(){ // when loads this will be called
+      Vue.use("Vuetify");
+      new Vue({ 
+        el: '#app',
+        data: function(){
+            return {
+              searchTerm:"",
+              pag:{},
+              results: [],
+              headers: [
+                {text:"name", value:"name"},
+                {text:"action", value:""}
+              ]
+            }
+        }, 
+        methods:{
+          }
+        }
+      });
+    }
+block content
+  h1 Search For Food
+  v-form
+    v-text-field(v-model="searchTerm")
+    h1 Search Results
+    v-data-table(:headers="headers" :items="results" :pagination.sync="pag")
+      template(slot="items" slot-scope="props")
+        td {{props.item.name}}
+        td

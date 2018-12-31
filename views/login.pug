@@ -19,11 +19,15 @@ block head
         });
     }
 block content
-  v-container
-    h1= title
-    v-form(method='POST')
-      v-text-field(label= "email" name="email" v-model='login.email') 
-      v-text-field(label= "password" name="password" v-model='login.password' type='password' )
-      v-btn(type='submit' color='') login
+    h1.display-3.text-xs-center.front-weight-bold= title
+      v-card
+        v-card-text
+          v-container
+            v-form(method='POST')
+              v-text-field(prepend-icon="person" label= "email" name="email" v-model='login.email') 
+              v-text-field(prepend-icon="lock" label= "password" name="password" v-model='login.password' type='password' )
+              v-btn(type='submit' color='lime') login
+          h2.display-1.text-xs-center Don't have an Account?
+          v-btn(href='/new-user' color='blue lighten-4') Create Account
     if message
       v-alert(:value="true" type="error")= message
