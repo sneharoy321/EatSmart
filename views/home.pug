@@ -1,0 +1,22 @@
+extends layout
+block head 
+  script.
+    window.onload = function(){ // when loads this will be called
+      Vue.use("Vuetify");
+      new Vue({ 
+        el: '#app'
+      });
+    }
+block content
+  v-card
+    v-card-text
+      p.display-3.text-xs-center.front-weight-bold Welcome to Eat Smart!
+      p.title.text-xs-center.front-weight-bold Eat Healthy without the Hassle
+        
+            
+
+
+
+            
+
+        

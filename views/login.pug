@@ -1,0 +1,29 @@
+extends layout
+block head 
+  script.
+    window.onload = function(){ // when loads this will be called
+      Vue.use("Vuetify");
+      new Vue({ 
+        el: '#app',
+        data: function(){
+            return {
+              login: {
+                email:null,
+                password:null
+              },
+              form: {
+                hidePassword: true
+              }
+            }
+        }
+        });
+    }
+block content
+  v-container
+    h1= title
+    v-form(method='POST')
+      v-text-field(label= "email" name="email" v-model='login.email') 
+      v-text-field(label= "password" name="password" v-model='login.password' type='password' )
+      v-btn(type='submit' color='') login
+    if message
+      v-alert(:value="true" type="error")= message

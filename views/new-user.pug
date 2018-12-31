@@ -1,0 +1,33 @@
+extends layout
+block head
+  script.
+    window.onload= function(){// upon loading this page the first thing 
+    Vue.use("Vuetify");
+      new Vue({ 
+        el: '#app',
+        data: function(){
+            return {
+              user: !{JSON.stringify(user)}
+            }
+        }
+        });
+    }
+
+block content
+  #app
+    v-app
+      v-container
+        if(user.name)
+          h1= `Hello ${user.name} Welcome to your Profile`
+          
+        else
+          h1 New User Sign Up
+        v-form(method='POST')
+          v-text-field(label= "email" name="email" v-model='user.email') 
+          v-text-field(label= "password" name="password" v-model='user.password' type='password') 
+          v-text-field(label= "name" name="name" v-model='user.name') 
+          v-text-field(label= "dob" name="dob" v-model='user.dob')
+          v-text-field(label= "city" name="city" v-model='user.city') 
+
+          v-btn(type='submit' color="green") Save
+

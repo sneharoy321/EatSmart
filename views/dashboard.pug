@@ -1,0 +1,17 @@
+extends layout2
+
+block head 
+  script.
+    window.onload = function(){ // when loads this will be called
+      Vue.use("Vuetify");
+      new Vue({ 
+        el: '#app'
+      });
+    }
+block content
+  if(user)
+    h1.text-xs-center= `Hello ${user.name} Welcome to your Dashboard`
+  else
+    h1.display-2 You need to go sign in
+    v-btn(flat='' href='/login' color='success').display-2 Click Here
+
