@@ -8,9 +8,10 @@ block head
         el: '#app',
         data: function(){
             return {
-              Date: new Date().toISOString().substr(0, 10),
+              Date: new Date().toLocaleString().substr(0, 10),
               mealTypes: ['Breakfast','Lunch','Dinner','Snack'],
               items: [],
+              noResult: false,
               summary: {
                 'calories':0,
                 'fat':0,
@@ -78,7 +79,12 @@ block head
             console.log("searching for " + this.searchTerm)
             axios.get("/api/food?search=" + this.searchTerm)
               .then((response)=>{
-                this.results= response.data.list.item;
+                if(response.data.list != undefined){//truthy if is defined// THIS DOES NOT WORK!!!
+                  this.results= response.data.list.item;
+                  this.noResult = false;
+                }else{
+                  this.noResult = true;
+                }
               })
               .catch(function(err){
                 console.log(err);
@@ -132,38 +138,8 @@ block head
 block content
   h1 Log Your Food
   v-container(grid-list-md='',text-xs-center='')
-    v-layout(row, wrap)
-      v-flex.grey(xs12)
-        h1 Meal
-        div
-          v-layout(row='', wrap='')
-          v-container(fluid='', grid-list-xl='')
-            v-layout(wrap='', align-center='')
-              v-flex(xs12='', sm6='', d-flex='')
-                v-select(:items='mealTypes', label='Meal Type' solo)
-      v-flex.grey(xs9)
-        h1 List of Items
-        v-container.lime
-          table
-            thead
-              tr
-                th  Item Name        
-                th
-                  v-btn(v-on:click="clear()"  color='light-blue accent-1') Clear
-            tr(v-for='item in items')
-              td {{item.name}}    
-              td
-                v-btn(v-on:click="delete(item)"  color='red').v-icon='delete'
-      v-flex.grey(xs3)
-        h1 Summary
-        v-container.lime
-          p # items: {{items.length}}
-          p Calories: {{totalCalories}} kcal
-          p Fat: {{totalFat}} g
-          p Carbohydrates: {{totalCarbohydrates}} g
-          p Protein: {{totalProtein}} g
     v-layout(row,wrap)
-      v-flex.grey(xs12)
+      v-flex.cyan.lighten-4(xs9)
         h1 Search
         v-form
           v-container
@@ -172,9 +148,38 @@ block content
             v-btn(v-on:click="increment") Next Page
             v-btn(v-on:click="decrement") Previous Page
             h1 Search Results
+            v-alert(v-model='noResult' type="error") No Results... Check Input
             v-data-table(:headers="headers" :items="results" :pagination.sync="pag")
               template(slot="items" slot-scope="props")
                 td {{props.item.name}}
                 td
                   v-btn(v-on:click="onSelect(props.item)") Select
+      v-divider  
+      v-flex.grey.lighten-2(xs3)
+        h1 List of Items
+        br
+        v-select(:items='mealTypes', label='Meal Type' solo)
+        v-container
+          table
+            thead
+              tr
+                th  Item Name        
+                th
+                  v-btn(v-on:click="clear()"  color='light-blue accent-1') Clear
+            tr(v-for='item in items')
+              td {{item.name}}    
+                v-divider
+              td
+                v-btn(v-on:click="delete(item)"  color='red').v-icon='delete'
+        v-divider 
+        v-container
+          h1 Summary
+          v-container
+            p # items: {{items.length}}
+            p Calories: {{totalCalories}} kcal
+            p Fat: {{totalFat}} g
+            p Carbohydrates: {{totalCarbohydrates}} g
+            p Protein: {{totalProtein}} g                    
+      
+    
 

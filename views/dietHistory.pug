@@ -8,40 +8,54 @@ block head
         el: '#app',
         data: () => ({
           date : new Date().toISOString().substr(0, 10),
-          results:[]
+          currrentDate: new Date().toLocaleString().substr(0, 10),
+          results:[],
+          headers: [
+                {text:"name", value:"name"},
+                {text:"action", value:""}
+              ],
+          isTest: false,
           
         }),
         methods:{
           getHistory: function(id){
-            console.log(this.date);
             console.log('getHistory() method was called for date ' + this.date.toString());
-            axios.get(`/api/dietHistory?selectedDate=${this.date}&userId=${id}`)
-            .then((response)=>{
-                console.log("This is " + response);//prints out "This is [object, Object]"
-              })
+            axios.get(`api/dietHistory?selectedDate=${this.date}&userId=${id}`)
+            .then(function(response){//so no response
+                this.results = response.data;
+                this.isTest = true;
+                console.log(this.results);//out puts the result as an array of JSON objects
+              }) 
               .catch(function(err){
                 console.log(err);
               });
           },
-        }
+        },
+        
       })
     }
     
 block content
   if(user)
     h1.display-3.text-xs-center.front-weight-bold= title
+    h1=items
     h2.display-1.text-xs-center Please Select a Date
     br
     v-card
-      v-date-picker.mt-3(v-model='date', full-width='', landscape='' color='indigo lighten-2' :max="new Date().toISOString().substr(0, 10)")
+      v-date-picker.mt-3(v-model='date', full-width='', color='indigo lighten-2' :max='new Date().toISOString().substr(0, 10)')
       v-layout
         v-flex(xs12 text-xs-center='')
           v-btn(color='lime' v-on:click=`getHistory(${user.id})`).text-xs-center Submit {{date}}
     br
     v-divider
-    v-card
-      v-card-title.indigo.white--text.headline Day Information 
-      v-container
-        p {{date}}
+    if(isTest)
+      h1 UGHHHHH
+    //- v-card
+    //-   v-card-title.indigo.white--text.headline Day Information 
+    //-   h1 History Results
+    //-     v-data-table(:headers="headers" :items="results" )
+    //-       template(slot="items" slot-scope="props")
+    //-         td {{props.item.mealType}}
+
         
 

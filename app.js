@@ -12,6 +12,12 @@ app.use(session({
   secret: '0869883'
 }));
 
+app.get('/logout', function (req, res){ // TO SIGN OUT
+  req.session.destroy(function (err) {
+    res.redirect('/login'); //Inside a callback… bulletproof!
+  });
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

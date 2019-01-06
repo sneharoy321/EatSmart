@@ -24,6 +24,7 @@ block head
                 {text:"name", value:"name"},
                 {text:"action", value:""}
               ],
+              added: false
             }
         }, 
         computed: {
@@ -71,8 +72,9 @@ block head
               mealType: this.mealType,
               summary: this.summary,
             });
+            this.added = true;
+            this.items=[];
             console.log("add food method");
-            
           },
           increment:function(){
             this.pag.page++;
@@ -82,16 +84,12 @@ block head
               this.pag.page--;
             }
           },
-          delete:function(item){
-            console.log("delete method called")
-            var index = this.items.indexOf(item);
-            //Vue.delete(this.items, index);
-          },
           onSearch:function(){
             console.log("searching for " + this.searchTerm)
-            axios.get("/api/food?search=" + this.searchTerm)
+            axios.get("/api/food?search=" + this.searchTerm) // calls the first API which is the list of available foods and an ndbno number for the food
               .then((response)=>{
                 this.results= response.data.list.item;
+                console.log(this.results);
               })
               .catch(function(err){
                 console.log(err);
@@ -101,15 +99,15 @@ block head
             console.log(JSON.stringify(item));
 
             //have now added it to the items array
-            axios.get("/api/food/" + item.ndbno)
+            axios.get("/api/food/" + item.ndbno) // calls the nutrition api for the food when passed in the params of ndbno
               .then((response)=>{
                 console.log(response);
-                var food = response.data.foods[0].food;
+                var food = response.data.foods[0].food; // first index cause it is ina that array there is a food object
                 var item = {
                   "nbdno": food.desc.ndbno,
                   "name": food.desc.name
                 };
-                console.log(food.nutrients);
+                //console.log(food.nutrients);
                 for(var nutrient of food.nutrients){
                   console.log(nutrient.name);
                   switch(nutrient.name){//passing in variable
@@ -143,54 +141,56 @@ block head
       });
     }
 block content
-  v-card.indigo.lighten-5
-    v-card-title
-      h1.display-3 Log Your Food
-      v-spacer
-      v-btn(v-on:click="addFood()" color="success") Add Meal
+  v-card.lime.lighten-5
     v-container
-      v-layout(row, wrap)
-        v-flex(xs12)
-          h1 Meal
-          div
-            v-layout(row='', wrap='')
-            v-container(fluid='', grid-list-xl='')
-              v-layout(wrap='', align-center='')
-                v-flex(xs12='', sm6='', d-flex='')
-                  v-select(:items='mealTypes', label='Meal Type' v-model='mealType' solo)
-        v-flex(xs9)
-          h1 List of Items
-          v-container
-            table
-              thead
-                tr
-                  th  Item Name        
-                  th
-                    v-btn(v-on:click="clear()"  color='light-blue accent-1') Clear
-              tr(v-for='item in items')
-                td {{item.name}}    
-                td
-                  v-btn(v-on:click="delete(item)"  color='red').v-icon='delete'
-        v-flex(xs3)
-          h1 Summary
-          v-container
-            p # items: {{items.length}}
-            p Calories: {{totalCalories}} kcal
-            p Fat: {{totalFat}} g
-            p Carbohydrates: {{totalCarbohydrates}} g
-            p Protein: {{totalProtein}} g
-      v-layout(row,wrap)
-        v-flex(xs12)
-          h1 Search
+      v-card-title
+        h1.display-3 Log Your Food
+        v-spacer
+        v-btn(v-on:click="addFood()" color="success") Add Meal
+      v-alert(v-model='added' type="success") Your Meal was Added
+      v-container
+        v-layout(row, wrap)
+          v-flex(xs12)
+            h1 Meal
+            div
+              v-layout(row='', wrap='')
+              v-container(fluid='', grid-list-xl='')
+                v-layout(wrap='', align-center='')
+                  v-flex(xs12='', sm6='', d-flex='')
+                    v-select(:items='mealTypes', label='Meal Type' v-model='mealType' solo)
+          v-flex(xs9)
+            h1 List of Items
             v-container
-              v-text-field(solo v-model="searchTerm" label='Food Name' append-icon='search')
-              v-btn(v-on:click="onSearch") Search
-              v-btn(v-on:click="increment") Next Page
-              v-btn(v-on:click="decrement") Previous Page
-              h1 Search Results
-              v-data-table(:headers="headers" :items="results" :pagination.sync="pag")
-                template(slot="items" slot-scope="props")
-                  td {{props.item.name}}
-                  td
-                    v-btn(v-on:click="onSelect(props.item)") Select
+              table
+                thead
+                  tr
+                    th  Item Name        
+                    th
+                      v-btn(v-on:click="clear()"  color='light-blue accent-1') Clear
+                tr(v-for='item in items')
+                  td {{item.name}}    
+                  //- td
+                  //-   v-btn(v-on:click="delete(item)"  color='red')
+          v-flex(xs3)
+            h1 Summary
+            v-container
+              p # items: {{items.length}} items
+              p Calories: {{totalCalories}} kcal
+              p Fat: {{totalFat}} g
+              p Carbohydrates: {{totalCarbohydrates}} g
+              p Protein: {{totalProtein}} g
+        v-layout(row,wrap)
+          v-flex(xs12)
+            h1 Search
+              v-container
+                v-text-field(solo v-model="searchTerm" label='Food Name' append-icon='search')
+                v-btn(v-on:click="onSearch") Search
+                v-btn(v-on:click="increment") Next Page
+                v-btn(v-on:click="decrement") Previous Page
+                h1 Search Results
+                v-data-table(:headers="headers" :items="results" :pagination.sync="pag")
+                  template(slot="items" slot-scope="props")
+                    td {{props.item.name}}
+                    td
+                      v-btn(v-on:click="onSelect(props.item)") Select
 

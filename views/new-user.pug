@@ -8,20 +8,26 @@ block head
         data: function(){
             return {
               user: !{JSON.stringify(user)},
+              isValidForm: false,
               rules: {
-                required: value => !!value || 'Required .',
+                required: value => !!value || 'Required.',
                 counter: value => value.length <= 20 || 'Max 20 characters',
                 min: v => v.length >= 8 || 'Min 8 characters',
                 numeric: v => !isNaN(v) || 'Numbers Only',
                 email: value => {
                   const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                   return pattern.test(value) || 'Invalid e-mail.'
-                }
-              }
+                },
+              },
             }
+        },
+        methods:{
+          checkForm:function(form){
+
+          }
         }
         });
-    
+    //NOTE TO FUTURE SNEHA FIX THE DATE PICKER FOR DATE OF BIRTH
     }
 
 block content
@@ -32,18 +38,17 @@ block content
         br
         v-card
           v-container
-            v-form(method='POST')
+            v-form(method='POST' onsubmit="return checkForm(this) ")
               v-container.white
                 v-text-field(label= "E-mail" name="email" v-model='user.email' :rules='[rules.required, rules.email]') 
                 v-text-field(label= "Password" name="password" v-model='user.password' type='password' :rules='[rules.required, rules.min]') 
-                v-text-field(label= "Name" name="name" v-model='user.name') 
-                //v-text-field(label= "dob" name="dob" v-model='user.dob')
-                v-text-field(label= "City" name="city" v-model='user.city') 
+                v-text-field(label= "Name" name="name" v-model='user.name' :rules='[rules.required]') 
+                v-text-field(label= "City" name="city" v-model='user.city' :rules='[rules.required]') 
                 v-text-field(label= "Weight" name="weight" v-model='user.weight' type='number' :rules='[rules.required, rules.numeric]') 
                 v-text-field(label= "Height" name="height" v-model.number='user.height' type='number' :rules='[rules.required, rules.numeric]') 
                 v-text-field(name='Date Of Birth' v-model='user.dob' label='Date of Birth' prepend-icon='event' readonly)
                 v-date-picker(v-model='user.dob')
-                  v-spacer
                 p {{user.dob}}
                 br
-                v-btn(type='submit' color="green") Save
+                v-spacer
+                  v-btn(type='submit' color="green" v-on:click='' ) Save

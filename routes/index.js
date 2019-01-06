@@ -32,9 +32,9 @@ router.get('/new-user', function(req, res, next) {
 });
 router.get('/check-in', function(req, res, next) {
   if(req.session.user){
-    res.render('check-in', { title: 'EatSmart New User',"user":req.session.user});
+    res.render('check-in', { title: 'EatSmart Check In',"user":req.session.user});
   }
-  else{
+  else{ 
     res.redirect("/login");
   }
 });
@@ -51,8 +51,8 @@ router.get('/dietHistory', function(req, res, next) {
   if(req.session.user){
     res.render('dietHistory', { title: 'EatSmart Diet History',"user":req.session.user, "items":req.session.items});
   }
-  else{
-    res.redirect("/login");
+  else{ 
+    res.redirect("/login"); 
   }
 });
 router.get('/dashboard', function(req, res, next) {
@@ -123,8 +123,9 @@ router.post('/check-in', function(req, res, next) {
        if (err) throw err;
       console.log("updated the weight and height stuff");
     }); 
+    req.session.user.weight = req.body.weight;
+    req.session.user.height = req.body.height;
     res.redirect('/check-in')
-    
 }); 
 router.post('/profile', function(req, res, next) {
     var arrKeys = Object.keys(req.body);
@@ -141,9 +142,10 @@ router.post('/profile', function(req, res, next) {
       req.body.id = req.session.user.id;
       req.session.user = req.body;
       res.redirect('/profile'); 
-    });
-        
+    });    
+          
 });
 
 
 module.exports = router;
+ 

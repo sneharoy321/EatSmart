@@ -20,9 +20,9 @@ const api = {
 router.get("/",function(req,res,next){
   res.json({
     "message":"EatSmart Api"
-  });
-})
-
+  });  
+})  
+ 
 router.get("/food",function(req,res,next){
   let searchTerm = req.query.search;
   let offset = req.query.offset ? req.query.offset : 1;
@@ -52,9 +52,9 @@ router.get("/food",function(req,res,next){
 })
 
 
-router.get('/food/:id', function(req, res, next){
+router.get('/food/:id', function(req, res, next){// CALL TO NUTRITION API
 
-  let id = req.params.id;
+  let id = req.params.id; //ID IS THE NBDNO NUMBER (kinda like a GUID for the Item)
   let url = `https://api.nal.usda.gov/ndb/V2/reports?api_key=PTkeAfXI6Nx4FJ5CSoQwMrKaQFTwvVNDgQH2j7bR&format=json&ndbno=${id}&type=b`;//different url to get nutrition
   console.log(url);
   axios.get(url)
@@ -72,16 +72,16 @@ router.get('/food/:id', function(req, res, next){
 })
 
 router.post('/meals', function(req, res, next) {//adding in a meal
-  //variables: meal type, items, date, time
+  //variables: meal type, items, date, time!
   console.log("REACHED METHOD IN API");
   var sql = `INSERT INTO eatsmart.DietHistory (userID, mealType, items, nutritionSum) VALUES ('${req.session.user.id}', '${req.body.mealType}','${JSON.stringify(req.body.items)}', '${JSON.stringify(req.body.summary)}')`;
   console.log(sql);
   con.query(sql, function (err, results) {
-      if (err) throw err;
-      console.log("added");
+      if (err) throw err; 
+      console.log("added"); 
   }); 
   console.log("REACHED THE END");
-  res.redirect('/login');// WHY ISNT THIS WORKING!!!!!?!?!?!?!?!?!? UGGHHHHHHH!!!!!!!!!
+  
 });
 
 router.get('/dietHistory', function(req, res, next) {//Returns history of what u ate on this day
@@ -89,17 +89,16 @@ router.get('/dietHistory', function(req, res, next) {//Returns history of what u
   '${req.query.selectedDate} 00:00:00' AND '${req.query.selectedDate} 23:59:59'`;
   //returns everything eaten in that date  
   console.log(sql);
-
   con.query(sql, function (err, result) {//result is an array of JSon objects and stuff
     if (err) throw err;
     console.log(result);// this prints out the correct value of a json object array of each meal
     if(req.session.user){
-      res.render('dietHistory', { title: 'EatSmart Diet History',"user":req.session.user, "items":result});
+      res.json(result)
+      return result; 
     }
     else{
       res.redirect("/login");
     }
-    return result; 
   });
 
 });

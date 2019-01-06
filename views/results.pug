@@ -27,7 +27,4 @@ block content
   v-form
     v-text-field(v-model="searchTerm")
     h1 Search Results
-    v-data-table(:headers="headers" :items="results" :pagination.sync="pag")
-      template(slot="items" slot-scope="props")
-        td {{props.item.name}}
-        td
+   

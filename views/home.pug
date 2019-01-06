@@ -6,7 +6,8 @@ block head
       new Vue({ 
         el: '#app',
         data: () => ({
-          gradient: 'to top right, rgba(63,81,181, .7)'
+          gradient: 'to top right, rgba(63,81,181, .7)',
+
         })
       });
     }
@@ -15,7 +16,7 @@ block content
      v-container(fill-height='')
       v-layout(align-center='')
         v-flex(text-xs-center='')
-          h3.display-4 Welcome to Eat Smart!
+          h3.display-3 Welcome to Eat Smart!
           h2.display-1.text-xs-center.front-weight-bold Eat Healthy without the Hassle
   br
   v-container
@@ -24,15 +25,14 @@ block content
         v-card
           v-container.lime.accent-1
             v-card-text
-              p.display-1.text-xs-center Eat Smart is a nutrition calculating web application designed to educate people on their diet 
-      v-flex(xs1)     
-      v-flex(xs2) 
+              p.display-1.text-xs-center Eat Smart is a nutrition calculating web application designed to educate people on their diet    
+      v-flex(xs3) 
         v-card
           v-container.lime.accent-1
             v-card-text
-              p.display-1.text-xs-center Sign Up to keep track of every meal you eat and its nutritional information
+              p.subheading.text-xs-center Sign Up to keep track of every meal you eat and its nutritional information
             v-btn(large='' block='' color='secondary' href='/new-user').display-1 Sign Up
-              
+    
 
 
 
