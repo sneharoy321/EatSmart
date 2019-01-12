@@ -7,13 +7,19 @@ var mysqlConfig = config.get('mysql');
 var mysql = require('mysql');
 
 var con = mysql.createConnection(mysqlConfig);
+// var con = mysql.createConnection({
+//   host: "localhost",
+//   port:"3000",
+//   user: "yourusername",
+//   password: "yourpassword"
+// }); 
 
 con.connect(function(err) {
   if (err) throw err;
-  console.log("Connected!");
+  console.log("Connected!"); 
 });
 
-/* GET home page. */
+/* GET home page. */  
 //-----------------------------------------------------------------------------------------
 router.get('/login', function(req, res, next) {
   res.render('login', { title: 'EatSmart Login' });
@@ -25,7 +31,7 @@ router.get('/home', function(req, res, next) {
   res.render('home', { title: 'EatSmart Home' });
 });
 router.get('/', function(req, res, next) {
-  res.render('home', { title: 'EatSmart Home' });
+  res.render('home', { title: 'EatSmart Home' }); 
 });
 router.get('/new-user', function(req, res, next) {
   res.render('new-user', { title: 'EatSmart New User',"user":{} });
@@ -42,7 +48,7 @@ router.get('/check-in', function(req, res, next) {
 router.get('/diet', function(req, res, next) {
   if(req.session.user){
     res.render('diet', { title: 'EatSmart Diet',"user":req.session.user});
-  } 
+  }  
   else{ 
     res.redirect("/login");
   } 
@@ -74,8 +80,8 @@ router.get('/profile', function(req, res, next) {
 //------------------------------------------------------------------------------------------
 router.post('/login', function(req, res, next) {
   var sql = `SELECT * FROM eatsmart.user WHERE email= "${req.body.email}"`;
-  console.log(sql);
-  con.query(sql, function (err, results) {
+  console.log(sql); 
+  con.query(sql, function (err, results) {//gives ERROR IF DUPLICATE LATER FIX THIS
     if (err) throw err;
     console.log("Result: " + JSON.stringify(results,null,2));
     if(results.length == 0){
@@ -137,14 +143,14 @@ router.post('/profile', function(req, res, next) {
     console.log(sql);
     con.query(sql, function (err, results) {
        if (err) throw err;
-      console.log("updated");
+      console.log("updated"); 
       console.log(JSON.stringify(results));
       req.body.id = req.session.user.id;
       req.session.user = req.body;
-      res.redirect('/profile'); 
+      res.redirect('/profile');  
     });    
           
-});
+}); 
 
 
 module.exports = router;

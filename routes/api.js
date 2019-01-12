@@ -14,14 +14,14 @@ const api = {
 }
 // const apiNutrition = {
 //   "url":'https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=QawBznBQR9E1FYPLVnmh6cxo2KK0M8zArJJnTRFw&location=Denver+CO',
-//   'key':'QawBznBQR9E1FYPLVnmh6cxo2KK0M8zArJJnTRFw'
+//   'key':'QawBznBQR9E1FYPLVnmh6cxo2KK0M8zArJJnTRFw'   
 // }
 
 router.get("/",function(req,res,next){
-  res.json({
+  res.json({ 
     "message":"EatSmart Api"
   });  
-})  
+})   
  
 router.get("/food",function(req,res,next){
   let searchTerm = req.query.search;
@@ -30,10 +30,10 @@ router.get("/food",function(req,res,next){
   let total;
 
   if(!searchTerm){
-    res.json({
+    res.json({ 
       "message":"Food API"
     })
-    return;
+    return; 
   }
   
   let url = `${api.url}/search?format=json&q=${searchTerm}&api_key=${api.key}&offset=${offset}&max=${max}`;
@@ -53,7 +53,7 @@ router.get("/food",function(req,res,next){
 
 
 router.get('/food/:id', function(req, res, next){// CALL TO NUTRITION API
-
+ 
   let id = req.params.id; //ID IS THE NBDNO NUMBER (kinda like a GUID for the Item)
   let url = `https://api.nal.usda.gov/ndb/V2/reports?api_key=PTkeAfXI6Nx4FJ5CSoQwMrKaQFTwvVNDgQH2j7bR&format=json&ndbno=${id}&type=b`;//different url to get nutrition
   console.log(url);
@@ -62,7 +62,6 @@ router.get('/food/:id', function(req, res, next){// CALL TO NUTRITION API
       console.log(response.data);
       res.json(response.data);
       total = response.data.total;
-
       return;
     })
     .catch(function(err){
@@ -79,7 +78,7 @@ router.post('/meals', function(req, res, next) {//adding in a meal
   con.query(sql, function (err, results) {
       if (err) throw err; 
       console.log("added"); 
-  }); 
+  });  
   console.log("REACHED THE END");
   
 });
@@ -88,16 +87,17 @@ router.get('/dietHistory', function(req, res, next) {//Returns history of what u
   var sql = `SELECT nutritionSum, items, mealType FROM eatsmart.DietHistory WHERE userId= "${req.query.userId}" AND dateTime BETWEEN 
   '${req.query.selectedDate} 00:00:00' AND '${req.query.selectedDate} 23:59:59'`;
   //returns everything eaten in that date  
-  console.log(sql);
+  console.log(sql); 
   con.query(sql, function (err, result) {//result is an array of JSon objects and stuff
     if (err) throw err;
     console.log(result);// this prints out the correct value of a json object array of each meal
     if(req.session.user){
+      debugger;
       res.json(result)
-      return result; 
-    }
+      return result;  
+    } 
     else{
-      res.redirect("/login");
+      res.redirect("/login"); 
     }
   });
 

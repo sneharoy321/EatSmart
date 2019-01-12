@@ -7,29 +7,74 @@ block head
       new Vue({
         el: '#app',
         data: () => ({
+          rowsPerPageItems: [4, 8, 12],
+          pagination: {
+            rowsPerPage: 4
+          },
           date : new Date().toISOString().substr(0, 10),
           currrentDate: new Date().toLocaleString().substr(0, 10),
-          results:[],
+          items: [],
+          nutritionSumVal:[],
+          mealTypes:[],
+          pag: {},
           headers: [
                 {text:"name", value:"name"},
-                {text:"action", value:""}
+                {text:"calories", value:"calories"},
+                {text:"protein", value:"protein"},
+                {text:"fat", value:"fat"},
+                {text:"carbohydrate", value:"carbohydrate"}
               ],
-          isTest: false,
           
         }),
         methods:{
           getHistory: function(id){
             console.log('getHistory() method was called for date ' + this.date.toString());
             axios.get(`api/dietHistory?selectedDate=${this.date}&userId=${id}`)
-            .then(function(response){//so no response
-                this.results = response.data;
-                this.isTest = true;
-                console.log(this.results);//out puts the result as an array of JSON objects
+            .then( (response)=>{//fat arrow function allows this to refer to variables outside of function
+                console.log(response.data);
+
+                this.items = []; // clears the meal Types
+                for(var i in response.data){ // 
+                  var item = JSON.parse(response.data[i].items); // array of all the meal Types
+                  var nutritionSum = JSON.parse(response.data[i].nutritionSum);
+                  var nutritionSumItem = {
+                    "name": "Total",
+                    "calories": nutritionSum.calories,
+                    "protein": nutritionSum.protein,
+                    "fat":nutritionSum.fat,
+                    "carbohydrate":nutritionSum.carbohydrates 
+                  };
+                  item.push(nutritionSumItem);
+                  this.items.push(item);
+                }
+                
+                
+                //- nutritionSum.push(JSON.parse(response.data[0].nutritionSum));
+                //- this.nutritionSumVal = nutritionSum;
+                console.log(this.nutritionSumVal);
+                console.log(this.mealTypes);
+
+                //- //- var itemNames = response.data[0].items; // gets the first meal's items which is a stringified array
+                //- //- var itemNamesArray = JSON.parse(itemNames); // parses the item array for the first meal in this case looks kinda like [{ndbno:bleh, name: foodname}]
+                //- //- //this.nutritionInfoForMeal = JSON.parse(response.data[0].nutritionSum);
+                //- this.items = itemNamesArray; // sets this.items to itemNamesArray so now this.items equals an array of JSON objects
+
+                console.log(this.items);//outputs the result as an array of JSON objects
               }) 
               .catch(function(err){
                 console.log(err);
-              });
+              });//do it now for nutrition summanry
           },
+          getCalories: function(nutritionSum){
+            var nutrition = JSON.parse(nutritionSum);
+            return nutrition.calories;
+          },
+          getItems: function(item){
+            var individualFoodsArr = JSON.parse(item);
+            var individualFood = individualFoodsArr[0]; 
+            //parse item
+            return individualFoods;
+          }
         },
         
       })
@@ -38,24 +83,23 @@ block head
 block content
   if(user)
     h1.display-3.text-xs-center.front-weight-bold= title
-    h1=items
-    h2.display-1.text-xs-center Please Select a Date
+    h2.display-1.text-xs-center Please Select a Date 
     br
     v-card
       v-date-picker.mt-3(v-model='date', full-width='', color='indigo lighten-2' :max='new Date().toISOString().substr(0, 10)')
       v-layout
         v-flex(xs12 text-xs-center='')
           v-btn(color='lime' v-on:click=`getHistory(${user.id})`).text-xs-center Submit {{date}}
-    br
-    v-divider
-    if(isTest)
-      h1 UGHHHHH
-    //- v-card
-    //-   v-card-title.indigo.white--text.headline Day Information 
-    //-   h1 History Results
-    //-     v-data-table(:headers="headers" :items="results" )
-    //-       template(slot="items" slot-scope="props")
-    //-         td {{props.item.mealType}}
-
-        
-
+  br
+  br
+  //-so basically each element in item represents one meal item[]
+  //- in this case the zero'th index symbolizes the first meal
+  v-data-table(:headers="headers" :items="this.items[0]") 
+    tr
+      template(slot="items" slot-scope="props")
+        td {{ props.item.name }}
+        td {{ props.item.calories }}
+        td {{ props.item.protein }}
+        td {{ props.item.fat }}
+        td {{ props.item.carbohydrate }}
+  br

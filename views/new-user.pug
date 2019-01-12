@@ -23,7 +23,9 @@ block head
         },
         methods:{
           checkForm:function(form){
-
+            if(form.name == "" ){
+              return false;
+            }
           }
         }
         });
@@ -38,7 +40,7 @@ block content
         br
         v-card
           v-container
-            v-form(method='POST' onsubmit="return checkForm(this) ")
+            v-form(method='POST' onsubmit="return checkForm(this);" )
               v-container.white
                 v-text-field(label= "E-mail" name="email" v-model='user.email' :rules='[rules.required, rules.email]') 
                 v-text-field(label= "Password" name="password" v-model='user.password' type='password' :rules='[rules.required, rules.min]') 
@@ -51,4 +53,4 @@ block content
                 p {{user.dob}}
                 br
                 v-spacer
-                  v-btn(type='submit' color="green" v-on:click='' ) Save
+                v-btn(type='submit' color="green" v-on:click='' ) Save

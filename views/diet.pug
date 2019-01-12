@@ -28,7 +28,7 @@ block head
             }
         }, 
         computed: {
-            totalCalories: function(){
+            totalCalories: function(){//add it based n the aray so everyime item changes this will too
               var calories = 0;
               for(var item of this.items){
                 calories += item.calories;
@@ -73,7 +73,9 @@ block head
               summary: this.summary,
             });
             this.added = true;
-            this.items=[];
+            this.items=[];//clears the array of food stuff
+            this.mealType=null;//clears meal Type'
+            this.results=[];//
             console.log("add food method");
           },
           increment:function(){
