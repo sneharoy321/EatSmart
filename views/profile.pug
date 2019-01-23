@@ -19,13 +19,15 @@ block content
     v-app
       v-container
         h1.display-3.text-xs-center.front-weight-bold= `Welcome to your Profile`
+        //- label is what it is gunna display
+        //- v-model is like sets value to the the user object's email
+        //- name is like what ur gunna call it like when you refer to this field you refer to it by its name
         v-card
           v-container
             v-form(method='POST')
               v-text-field(label= "email" name="email" v-model='user.email') 
               v-text-field(label= "password" name="password" v-model='user.password'  type='password') 
               v-text-field(label= "name" name="name" v-model='user.name') 
-              v-text-field(label= "dob" name="dob" v-model='user.dob')
               v-text-field(label= "city" name="city" v-model='user.city') 
 
               v-btn(type='submit' color="lime") Save

@@ -7,16 +7,11 @@ block head
       new Vue({
         el: '#app',
         data: () => ({
-          rowsPerPageItems: [4, 8, 12],
-          pagination: {
-            rowsPerPage: 4
-          },
           date : new Date().toISOString().substr(0, 10),
-          currrentDate: new Date().toLocaleString().substr(0, 10),
-          items: [],
+          items: [], //
           nutritionSumVal:[],
           mealTypes:[],
-          pag: {},
+          pag: {},//pagination
           headers: [
                 {text:"name", value:"name"},
                 {text:"calories", value:"calories"},
@@ -27,14 +22,16 @@ block head
           
         }),
         methods:{
+          //gets the history for selected date and sets it to items 
           getHistory: function(id){
             console.log('getHistory() method was called for date ' + this.date.toString());
             axios.get(`api/dietHistory?selectedDate=${this.date}&userId=${id}`)
             .then( (response)=>{//fat arrow function allows this to refer to variables outside of function
                 console.log(response.data);
-
-                this.items = []; // clears the meal Types
+                this.mealTypes=[]; //clears the meal Types
+                this.items = []; // clears the meal and item array thingy
                 for(var i in response.data){ // 
+                  this.mealTypes.push(response.data[i].mealType); // adds all meal types to an
                   var item = JSON.parse(response.data[i].items); // array of all the meal Types
                   var nutritionSum = JSON.parse(response.data[i].nutritionSum);
                   var nutritionSumItem = {
@@ -43,37 +40,19 @@ block head
                     "protein": nutritionSum.protein,
                     "fat":nutritionSum.fat,
                     "carbohydrate":nutritionSum.carbohydrates 
-                  };
+                  };//adds meal nutrition Summary as last element in the inner aray
                   item.push(nutritionSumItem);
                   this.items.push(item);
                 }
                 
-                
-                //- nutritionSum.push(JSON.parse(response.data[0].nutritionSum));
-                //- this.nutritionSumVal = nutritionSum;
                 console.log(this.nutritionSumVal);
                 console.log(this.mealTypes);
-
-                //- //- var itemNames = response.data[0].items; // gets the first meal's items which is a stringified array
-                //- //- var itemNamesArray = JSON.parse(itemNames); // parses the item array for the first meal in this case looks kinda like [{ndbno:bleh, name: foodname}]
-                //- //- //this.nutritionInfoForMeal = JSON.parse(response.data[0].nutritionSum);
-                //- this.items = itemNamesArray; // sets this.items to itemNamesArray so now this.items equals an array of JSON objects
 
                 console.log(this.items);//outputs the result as an array of JSON objects
               }) 
               .catch(function(err){
                 console.log(err);
               });//do it now for nutrition summanry
-          },
-          getCalories: function(nutritionSum){
-            var nutrition = JSON.parse(nutritionSum);
-            return nutrition.calories;
-          },
-          getItems: function(item){
-            var individualFoodsArr = JSON.parse(item);
-            var individualFood = individualFoodsArr[0]; 
-            //parse item
-            return individualFoods;
           }
         },
         
@@ -93,13 +72,16 @@ block content
   br
   br
   //-so basically each element in item represents one meal item[]
-  //- in this case the zero'th index symbolizes the first meal
-  v-data-table(:headers="headers" :items="this.items[0]") 
-    tr
-      template(slot="items" slot-scope="props")
-        td {{ props.item.name }}
-        td {{ props.item.calories }}
-        td {{ props.item.protein }}
-        td {{ props.item.fat }}
-        td {{ props.item.carbohydrate }}
+  //- this is a for loop
+  template(v-for="(meal, index) in items")
+    h1 {{mealTypes[index]}}
+    v-data-table(:headers='headers', :items='meal')
+      tr
+        template(slot="items" slot-scope="props")
+          td {{ props.item.name }}
+          td {{ props.item.calories }}
+          td {{ props.item.protein }}
+          td {{ props.item.fat }}
+          td {{ props.item.carbohydrate }}
+    br
   br

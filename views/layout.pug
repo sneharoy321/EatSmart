@@ -1,4 +1,5 @@
 doctype html
+//-WHEN NOT LOGGED IN USE THIS LAYOUT
 html
   head
     link(href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet")
@@ -19,6 +20,7 @@ html
         v-toolbar(color="light-green accent-1")
           v-toolbar-title Eat Smart
           div.hidden-sm-and-down
+            //-redirects to said page cause '/' <- calls index then home or page name goes to that page
             v-btn(flat='' href='/home') Home
             v-btn(flat='' href='/login') Login
             v-btn(flat='' href='/new-user') Sign Up

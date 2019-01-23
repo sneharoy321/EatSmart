@@ -1,0 +1,17 @@
+extends layout2
+block head
+  script.
+    window.onload= function(){// upon loading this page the first thing 
+    Vue.use("Vuetify");
+      new Vue({ 
+        el: '#app',
+        data: function(){
+            return {
+              user: !{JSON.stringify(user)}
+            }
+        }
+        });
+    }
+block content
+  h1.display-3 Check In
+  

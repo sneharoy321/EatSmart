@@ -1,22 +1,16 @@
 extends layout2
 
 block head 
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js")
   script.
     window.onload = function(){ // when loads this will be called
       Vue.use("Vuetify");
       new Vue({
         el: '#app',
         data: () => ({
-          labels: [
-            new Date().toLocaleString().substr(0,3),
-            'tomorow',
-            '6',
-            '9',
-            '12',
-            '3',
-            '6',
-            '9'
-          ],
+          date: new Date().toISOString().substr(0, 10),
+          labels:[],
+          //LABEL and Value are for the graph and the graph will display calories vs date in a later version
           value: [
             200,
             675,
@@ -27,22 +21,27 @@ block head
             250,
             240
           ]
-        }),
+        })
     })}
+    //style stuff is primarily for the graph
   style.
-    .v-sheet--offset {
+    .v-sheet--offset { 
       top: -24px;
       position: relative;
     }
 
     
 block content
-  h1.display-3.text-xs-center.front-weight-bold= `Hello ${user.name},`
-  h1.display-3.text-xs-center.front-weight-bold= `Welcome to your Dashboard!`
+  h1.display-3.text-xs-center.front-weight-bold= `Hello ${user.name},` 
+  //-the user object was passed with router.get 
+  h1.display-3.text-xs-center.front-weight-bold= `Welcome to your Dashboard!` 
+  br 
   br
-  br
+  //- v-card is basically something to help with layout and each card can have a sheet and inside a sheet av-sparkline
+  //- sparkline is basically the graph it was recently added a week ago to the Vuetify documentation so not much info available on how to use it for more complex data 
+  //- by doing :labels im calling the label property of v-sparkline and setting it equal to my labels and values as shown below 
   v-card
-    v-sheet(class="v-sheet--offset mx-auto" color="cyan" elevation="11" )
+    v-sheet(class="v-sheet--offset mx-auto" color="cyan" elevation="11" ) 
       v-sparkline(
         :labels="labels"
         :value="value"

@@ -5,13 +5,13 @@ block head
       Vue.use("Vuetify");
       new Vue({ 
         el: '#app',
-        data: function(){
+        data: function(){ //declare data
             return {
               login: {
                 email:null,
                 password:null
               },
-              form: {
+              form: { //traits of form
                 hidePassword: true
               }
             }
@@ -25,9 +25,10 @@ block content
           v-container
             v-form(method='POST')
               v-text-field(prepend-icon="person" label= "email" name="email" v-model='login.email') 
-              v-text-field(prepend-icon="lock" label= "password" name="password" v-model='login.password' type='password' )
+              v-text-field(prepend-icon="lock" label= "password" name="password" v-model='login.password' type='password')
               v-btn(type='submit' color='lime') login
           h2.display-1.text-xs-center Don't have an Account?
           v-btn(href='/new-user' color='blue lighten-4') Create Account
+    //-message would be send from the index if problem like wrong password
     if message
       v-alert(:value="true" type="error")= message

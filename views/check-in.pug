@@ -2,13 +2,13 @@ extends layout2
 block head
   script.
     window.onload= function(){// upon loading this page the first thing 
-    Vue.use("Vuetify");
+      Vue.use("Vuetify");
       new Vue({ 
         el: '#app',
         data: function(){
             return {
-              user: !{JSON.stringify(user)},
-              rules: {
+              user: !{JSON.stringify(user)}, // stringify the user
+              rules: { // for validation gives an error message if invalid input
                 required: value => !!value || 'Required.',
                 counter: value => value.length <= 20 || 'Max 20 characters',
                 min: v => v.length >= 8 || 'Min 8 characters',
@@ -26,8 +26,10 @@ block content
   h1.display-3.text-xs-center.front-weight-bold Check In
   if(user)
     v-card
+      //-v-container basically makes sure the form is within the bounds of the screen and of course I could do other stuff with a v-container but this is the main purpose in thsi scenario
       v-container
         v-form(method='POST')
+          //-so basically this is a form where you can update weight height 
           v-text-field(label= "Current Weight" name="weight" v-model='user.weight' type='number' :rules='[rules.required, rules.numeric]' )
           v-text-field(label= "Height" name="height" v-model='user.height' type='number' :rules='[rules.required, rules.numeric]') 
           br

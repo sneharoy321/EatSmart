@@ -6,28 +6,29 @@ block head
       Vue.use("Vuetify");
       new Vue({ 
         el: '#app',
-        data: function(){
+        data: function(){//declaring variables and stuff
             return {
-              mealTypes: ['Breakfast','Lunch','Dinner','Snack'],
-              mealType: null,
-              items: [],
-              summary: {
+              mealTypes: ['Breakfast','Lunch','Dinner','Snack'], // for the picker
+              mealType: null, // noting selected originally
+              noResult: false, // good or bad search
+              items: [], // the items chose array of JSON
+              summary: { // originally zero
                 'calories':0,
                 'fat':0,
                 'protein':0,
                 'carbohydrates':0
               },
-              searchTerm:"",
-              pag:{},
-              results: [],
-              headers: [
+              searchTerm:"", // this val gets searched
+              pag:{}, // for pagination
+              results: [],//results from the api Search
+              headers: [//headers for data table
                 {text:"name", value:"name"},
                 {text:"action", value:""}
               ],
-              added: false
+              added: false // meal successfully aded and stuff
             }
         }, 
-        computed: {
+        computed: { // these are methods to calculate the total of each nutrition such that even if items change the totals will too
             totalCalories: function(){//add it based n the aray so everyime item changes this will too
               var calories = 0;
               for(var item of this.items){
@@ -61,12 +62,13 @@ block head
               return carbs;
             }
         },
-        methods:{
-          clear:function(){
+        methods:{ 
+          clear:function(){ // basically clears items or all selected foods
             console.log("mealtype is " +  this.mealType)
             this.items=[];
           },
-          addFood(){
+          addFood(){ // add a food to the data base
+            //does a post and adds it to the database
             axios.post("/api/meals",{
               items: this.items,
               mealType: this.mealType,
@@ -75,22 +77,29 @@ block head
             this.added = true;
             this.items=[];//clears the array of food stuff
             this.mealType=null;//clears meal Type'
-            this.results=[];//
+            this.results=[];//clears the result
             console.log("add food method");
+            //kinda like submitting the form
           },
-          increment:function(){
+          increment:function(){ // pagination increment
             this.pag.page++;
           },
-          decrement:function(){
+          decrement:function(){ // pagination decrement
             if(this.pag.page > 1){
               this.pag.page--;
             }
           },
-          onSearch:function(){
+          onSearch:function(){ // searching the api for foods with the search term name 
             console.log("searching for " + this.searchTerm)
             axios.get("/api/food?search=" + this.searchTerm) // calls the first API which is the list of available foods and an ndbno number for the food
               .then((response)=>{
-                this.results= response.data.list.item;
+                if(response.data.list != undefined){//truthy if is defined// THIS DOES WORK!!!
+                  this.results= response.data.list.item; //returned an array of JSON objects with name of each food and ndbno numberfor each food ndbno is like unique id for each food 
+                  this.noResult = false; // this is for whether or not to error message
+                }else{
+                  this.noResult = true; // this is for the v-laert
+                  this.results=[]; // clears result
+                }
                 console.log(this.results);
               })
               .catch(function(err){
@@ -99,7 +108,6 @@ block head
           },
           onSelect(item){
             console.log(JSON.stringify(item));
-
             //have now added it to the items array
             axios.get("/api/food/" + item.ndbno) // calls the nutrition api for the food when passed in the params of ndbno
               .then((response)=>{
@@ -114,7 +122,7 @@ block head
                   console.log(nutrient.name);
                   switch(nutrient.name){//passing in variable
                     case 'Protein':// kinda like an if
-                      item.protein=  Math.round( parseFloat(nutrient.value));//rounds
+                      item.protein=  Math.round( parseFloat(nutrient.value));//rounds the protein such that there is nothing like 3.999999999999 
                       break;
                     case 'Total lipid (fat)':
                       item.fat= Math.round( parseFloat(nutrient.value));//rounds
@@ -137,14 +145,15 @@ block head
               .catch(function(err){
                 console.log(err);
               });
-
           }
         }
       });
     }
 block content
+  //-the main form is under this v-card
   v-card.lime.lighten-5
     v-container
+      //-this container is all about selecting the meal type  and adding the meals
       v-card-title
         h1.display-3 Log Your Food
         v-spacer
@@ -160,7 +169,9 @@ block content
                 v-layout(wrap='', align-center='')
                   v-flex(xs12='', sm6='', d-flex='')
                     v-select(:items='mealTypes', label='Meal Type' v-model='mealType' solo)
+          //-v-flex is basically for layout its out of 12 so xs9 is gunna take up 3/4ths of the page caus 9/12
           v-flex(xs9)
+            //- under here it displays all the meals selected and you can clear
             h1 List of Items
             v-container
               table
@@ -171,11 +182,11 @@ block content
                       v-btn(v-on:click="clear()"  color='light-blue accent-1') Clear
                 tr(v-for='item in items')
                   td {{item.name}}    
-                  //- td
-                  //-   v-btn(v-on:click="delete(item)"  color='red')
           v-flex(xs3)
+            //- this gives nutrition sum info
             h1 Summary
             v-container
+              //-{{}} <= syntax can both call the method and the property
               p # items: {{items.length}} items
               p Calories: {{totalCalories}} kcal
               p Fat: {{totalFat}} g
@@ -183,6 +194,7 @@ block content
               p Protein: {{totalProtein}} g
         v-layout(row,wrap)
           v-flex(xs12)
+            //- this is the searching part of the form
             h1 Search
               v-container
                 v-text-field(solo v-model="searchTerm" label='Food Name' append-icon='search')
@@ -190,6 +202,7 @@ block content
                 v-btn(v-on:click="increment") Next Page
                 v-btn(v-on:click="decrement") Previous Page
                 h1 Search Results
+                v-alert(v-model='noResult' type="error") No Results... Check Input
                 v-data-table(:headers="headers" :items="results" :pagination.sync="pag")
                   template(slot="items" slot-scope="props")
                     td {{props.item.name}}

@@ -6,7 +6,7 @@ block head
       new Vue({ 
         el: '#app',
         data: function(){
-            return {
+            return { // setting variables
               user: !{JSON.stringify(user)},
               isValidForm: false,
               rules: {
@@ -22,14 +22,11 @@ block head
             }
         },
         methods:{
-          checkForm:function(form){
-            if(form.name == "" ){
-              return false;
-            }
+          checkForm:function(form){ // in a later version do this
+            console.log(form);
           }
         }
         });
-    //NOTE TO FUTURE SNEHA FIX THE DATE PICKER FOR DATE OF BIRTH
     }
 
 block content
@@ -42,6 +39,7 @@ block content
           v-container
             v-form(method='POST' onsubmit="return checkForm(this);" )
               v-container.white
+                //-text fields for sumbmission
                 v-text-field(label= "E-mail" name="email" v-model='user.email' :rules='[rules.required, rules.email]') 
                 v-text-field(label= "Password" name="password" v-model='user.password' type='password' :rules='[rules.required, rules.min]') 
                 v-text-field(label= "Name" name="name" v-model='user.name' :rules='[rules.required]') 

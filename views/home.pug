@@ -12,6 +12,7 @@ block head
       });
     }
 block content
+  //-imported image for bkg
   v-jumbotron(:gradient='gradient', dark='', src='https://cdn.vuetifyjs.com/images/parallax/material2.jpg')
      v-container(fill-height='')
       v-layout(align-center='')
@@ -25,13 +26,14 @@ block content
         v-card
           v-container.lime.accent-1
             v-card-text
-              p.display-1.text-xs-center Eat Smart is a nutrition calculating web application designed to educate people on their diet    
+              p.display-1.text-xs-center Eat Smart is a nutrition calculating web application    
       v-flex(xs3) 
         v-card
           v-container.lime.accent-1
             v-card-text
               p.subheading.text-xs-center Sign Up to keep track of every meal you eat and its nutritional information
             v-btn(large='' block='' color='secondary' href='/new-user').display-1 Sign Up
+            //-button that redirects to sighn up
     
 
 

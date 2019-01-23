@@ -9,17 +9,17 @@ block head
         data: function(){
             return {
               Date: new Date().toLocaleString().substr(0, 10),
-              mealTypes: ['Breakfast','Lunch','Dinner','Snack'],
-              items: [],
-              noResult: false,
-              summary: {
+              mealTypes: ['Breakfast','Lunch','Dinner','Snack'], // the options for meals
+              items: [], // foods selected
+              noResult: false, // error when searching?
+              summary: { //total nutrition info
                 'calories':0,
                 'fat':0,
                 'protein':0,
                 'carbohydrates':0
               },
-              searchTerm:"",
-              pag:{},
+              searchTerm:"", // variable gunna search the api with
+              pag:{}, // for pagination
               results: [],
               headers: [
                 {text:"name", value:"name"},
@@ -28,7 +28,7 @@ block head
             }
         }, 
         computed: {
-            totalCalories: function(){
+            totalCalories: function(){ // just calculates the total calories and other info
               var calories = 0;
               for(var item of this.items){
                 calories += item.calories;
@@ -58,11 +58,13 @@ block head
             }
         },
         methods:{
-          clear:function(){
+          clear:function(){ // clears the array called items or items selected
             console.log("clear method called")
             this.items=[];
+            this.results = [];
+            this.searchTerm = [];
           },
-          increment:function(){
+          increment:function(){ // increment page in pagination
             this.pag.page++;
           },
           decrement:function(){
@@ -70,12 +72,7 @@ block head
               this.pag.page--;
             }
           },
-          delete:function(item){
-            console.log("delete method called")
-            var index = this.items.indexOf(item);
-            //Vue.delete(this.items, index);
-          },
-          onSearch:function(){
+          onSearch:function(){ // search for foods of that name and sets the returned array of JSON objects to results 
             console.log("searching for " + this.searchTerm)
             axios.get("/api/food?search=" + this.searchTerm)
               .then((response)=>{
@@ -90,7 +87,7 @@ block head
                 console.log(err);
               });
           },
-          onSelect(item){
+          onSelect(item){ // select an item and add it to items
             console.log(JSON.stringify(item));
 
             //have now added it to the items array
@@ -143,10 +140,12 @@ block content
         h1 Search
         v-form
           v-container
+            //- this is basically that search for food part of the form
             v-text-field(solo v-model="searchTerm" label='Food Name' append-icon='search')
             v-btn(v-on:click="onSearch") Search
             v-btn(v-on:click="increment") Next Page
             v-btn(v-on:click="decrement") Previous Page
+            //-after search shows results here
             h1 Search Results
             v-alert(v-model='noResult' type="error") No Results... Check Input
             v-data-table(:headers="headers" :items="results" :pagination.sync="pag")
@@ -159,6 +158,7 @@ block content
         h1 List of Items
         br
         v-select(:items='mealTypes', label='Meal Type' solo)
+        //- select the meal type with a selector
         v-container
           table
             thead
@@ -169,8 +169,6 @@ block content
             tr(v-for='item in items')
               td {{item.name}}    
                 v-divider
-              td
-                v-btn(v-on:click="delete(item)"  color='red').v-icon='delete'
         v-divider 
         v-container
           h1 Summary
