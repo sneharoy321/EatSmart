@@ -33,7 +33,7 @@ block content
   #app
     v-app
       v-container
-        h1.display-3.text-xs-center.front-weight-bold New User Sign Up
+        h4.display-3.text-xs-center.front-weight-bold New User Sign Up
         br
         v-card
           v-container
@@ -46,9 +46,14 @@ block content
                 v-text-field(label= "City" name="city" v-model='user.city' :rules='[rules.required]') 
                 v-text-field(label= "Weight" name="weight" v-model='user.weight' type='number' :rules='[rules.required, rules.numeric]') 
                 v-text-field(label= "Height" name="height" v-model.number='user.height' type='number' :rules='[rules.required, rules.numeric]') 
-                v-text-field(name='Date Of Birth' v-model='user.dob' label='Date of Birth' prepend-icon='event' readonly)
-                v-date-picker(v-model='user.dob')
-                p {{user.dob}}
-                br
+                v-divider
+                h3.display-1.text-xs-center.front-weight-bold Select Nutrition Goals
+                v-text-field(label= "Calories" name="calorieGoal" v-model.number='user.calorieGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                v-text-field(label= "Carbohydrates" name="carbohydrateGoal" v-model.number='user.carbohydrateGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                v-text-field(label= "Protein" name="proteinGoal" v-model.number='user.proteinGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                v-text-field(label= "Potassium" name="potassiumGoal" v-model.number='user.potassiumGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                v-text-field(label= "Fats" name="fatGoal" v-model.number='user.fatGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                v-text-field(label= "Vitamin A" name="vitaminAGoal" v-model.number='user.vitaminAGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                //-
                 v-spacer
                 v-btn(type='submit' color="green" v-on:click='' ) Save

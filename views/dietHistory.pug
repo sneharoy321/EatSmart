@@ -17,7 +17,9 @@ block head
                 {text:"calories", value:"calories"},
                 {text:"protein", value:"protein"},
                 {text:"fat", value:"fat"},
-                {text:"carbohydrate", value:"carbohydrate"}
+                {text:"carbohydrate", value:"carbohydrate"},
+                {text:"potassium", value:"potassium"},
+                {text:"vitaminA", value:"vitaminA"}
               ],
           
         }),
@@ -39,7 +41,9 @@ block head
                     "calories": nutritionSum.calories,
                     "protein": nutritionSum.protein,
                     "fat":nutritionSum.fat,
-                    "carbohydrate":nutritionSum.carbohydrates 
+                    "carbohydrate":nutritionSum.carbohydrates,
+                    "potassium":nutritionSum.potassium,
+                    "vitaminA":nutritionSum.vitaminA
                   };//adds meal nutrition Summary as last element in the inner aray
                   item.push(nutritionSumItem);
                   this.items.push(item);
@@ -83,5 +87,8 @@ block content
           td {{ props.item.protein }}
           td {{ props.item.fat }}
           td {{ props.item.carbohydrate }}
+          td {{ props.item.potassium}}
+          td {{ props.item.vitaminA}}
     br
   br
+  

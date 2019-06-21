@@ -16,7 +16,9 @@ block head
                 'calories':0,
                 'fat':0,
                 'protein':0,
-                'carbohydrates':0
+                'carbohydrates':0,
+                'potassium': 0,
+                'vitaminA': 0
               },
               searchTerm:"", // this val gets searched
               pag:{}, // for pagination
@@ -36,6 +38,30 @@ block head
               }
               this.summary.calories=calories;
               return calories;
+            },
+            totalPotassium: function(){//add it based n the aray so everyime item changes this will too
+              var potassium = 0; // pots short for potassium
+              for(var item of this.items){
+                var amount = 0;
+                if(item.potassium){
+                  amount = item.potassium;
+                }
+                potassium += amount;
+              }
+              this.summary.potassium=potassium;
+              return potassium;
+            },
+            totalVitaminA: function(){//add it based n the aray so everyime item changes this will too
+              var vitaminA = 0; // pots short for Vitamin A
+              for(var item of this.items){
+                var amount = 0;
+                if(item.vitaminA){
+                  amount = item.vitaminA;
+                }
+                vitaminA += amount;
+              }
+              this.summary.vitaminA=vitaminA;
+              return vitaminA;
             },
             totalFat: function(){
               var fat = 0;
@@ -117,12 +143,18 @@ block head
                   "nbdno": food.desc.ndbno,
                   "name": food.desc.name
                 };
-                //console.log(food.nutrients);
+                console.log(food.nutrients);
                 for(var nutrient of food.nutrients){
                   console.log(nutrient.name);
                   switch(nutrient.name){//passing in variable
                     case 'Protein':// kinda like an if
                       item.protein=  Math.round( parseFloat(nutrient.value));//rounds the protein such that there is nothing like 3.999999999999 
+                      break;
+                    case 'Vitamin A, IU':// kinda like an if
+                      item.vitaminA=  Math.round( parseFloat(nutrient.value));//rounds the protein such that there is nothing like 3.999999999999 
+                      break;
+                    case 'Potassium, K':
+                      item.potassium=  Math.round( parseFloat(nutrient.value)) + 0;
                       break;
                     case 'Total lipid (fat)':
                       item.fat= Math.round( parseFloat(nutrient.value));//rounds
@@ -192,6 +224,8 @@ block content
               p Fat: {{totalFat}} g
               p Carbohydrates: {{totalCarbohydrates}} g
               p Protein: {{totalProtein}} g
+              p Potassium: {{totalPotassium}} mg
+              p Vitamin A: {{totalVitaminA}} mcg
         v-layout(row,wrap)
           v-flex(xs12)
             //- this is the searching part of the form

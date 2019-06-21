@@ -14,7 +14,7 @@ const api = { //just an object that contains the api key and url for the api of 
 }
 
 /*
-PASS IN: SEARCH TERM OR LIKE FOOD NAME
+PASS IN: SEARCH TERM OR LIKE FOOD NAME 
 GETS an array of the top 50 search results from api 
 Each element in array is a JSON object with  Food NAME and NBDNO number which is like the identification number of each food
 */
@@ -24,7 +24,7 @@ router.get("/food",function(req,res,next){
   let max = req.query.max ? req.query.max: 50; // pick the top 50 values and only display them
   let total;
 
-  if(!searchTerm){
+  if(!searchTerm){ 
     res.json({  
       "message":"Food API"  
     })
@@ -52,7 +52,7 @@ router.get('/food/:id', function(req, res, next){// CALL TO NUTRITION API
   let id = req.params.id; //ID IS THE NBDNO NUMBER (kinda like a GUID for the Item)
   let url = `https://api.nal.usda.gov/ndb/V2/reports?api_key=PTkeAfXI6Nx4FJ5CSoQwMrKaQFTwvVNDgQH2j7bR&format=json&ndbno=${id}&type=b`;//different url to get nutrition
   console.log(url);
-  axios.get(url)
+  axios.get(url) 
     .then(function(response){  
       console.log(response.data); 
       res.json(response.data);
@@ -105,6 +105,27 @@ router.get('/dietHistory', function(req, res, next) {//Returns history of what u
     }
   });
 
+})
+router.get('/dietHistoryThisWeek', function(req, res, next) {//Returns history of what u ate this week
+  // var aWeekAgo = req.query.selectedDate - 7;
+  // console.log(aWeekAgo);
+  var sql = `SELECT nutritionSum FROM eatsmart.DietHistory WHERE userId= "${req.query.userId}" AND dateTime BETWEEN 
+  '${req.query.lastWeekDate} 00:00:00' AND '${req.query.selectedDate} 23:59:59'`; 
+  //returns everything eaten in that date     
+  console.log(sql);  
+  con.query(sql, function (err, result) {//result is an array of JSon objects and stuff  
+    if (err) throw err;
+    console.log(result);// this prints out the correct value of a json object array of each meal
+    if(req.session.user){
+      debugger;
+      res.json(result) 
+      return result;  
+    } 
+    else{
+      res.redirect("/login"); 
+    }
+  });
+
 });
 
 router.get("/",function(req,res,next){ 
@@ -112,6 +133,12 @@ router.get("/",function(req,res,next){
     "message":"EatSmart Api"
   });  
 })   
+
+// router.post('/setGoalsForm', function(req, res, next) {  
+//   var sql = `UPDATE eatsmart.user SET nutrientGoal = ${req.body.nutrientGoal} WHERE id = "${req.session.user.id}"`;
+//   console.log(nutrientGoal);
+//   res.redirect('/goals');
+// }); 
 
 
   

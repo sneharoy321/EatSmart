@@ -24,14 +24,28 @@ block head
     }
 block content
   h1.display-3.text-xs-center.front-weight-bold Check In
-  if(user)
-    v-card
-      //-v-container basically makes sure the form is within the bounds of the screen and of course I could do other stuff with a v-container but this is the main purpose in thsi scenario
-      v-container
-        v-form(method='POST')
-          //-so basically this is a form where you can update weight height 
-          v-text-field(label= "Current Weight" name="weight" v-model='user.weight' type='number' :rules='[rules.required, rules.numeric]' )
-          v-text-field(label= "Height" name="height" v-model='user.height' type='number' :rules='[rules.required, rules.numeric]') 
-          br
-          v-btn(type='submit' color="green") Save
+  v-card
+    v-container
+      h2.text-xs-center  Date vs Weight
+      v-sheet(class="v-sheet--offset mx-auto" color="cyan" elevation="11" )
+        v-sparkline(
+          :fill="fill"
+          :gradient="gradient"
+          :line-width="2"
+          :padding="20"
+          :smooth="radius || false"
+          :value=[3,16,7,3,11]
+          auto-draw)
+
+  v-divider
+
+  v-card
+    //-v-container basically makes sure the form is within the bounds of the screen and of course I could do other stuff with a v-container but this is the main purpose in thsi scenario
+    v-container
+      v-form(method='POST')
+        //-so basically this is a form where you can update weight height 
+        v-text-field(label= "Current Weight" name="weight" v-model='user.weight' type='number' :rules='[rules.required, rules.numeric]' )
+        v-text-field(label= "Height" name="height" v-model='user.height' type='number' :rules='[rules.required, rules.numeric]') 
+        br
+        v-btn(type='submit' color="green") Save
     

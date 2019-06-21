@@ -1,0 +1,161 @@
+extends layout2
+block head
+  script.
+    window.onload= function(){// upon loading this page the first thing 
+      Vue.use("Vuetify");
+      new Vue({ 
+        el: '#app',
+        data: function(){
+            return {
+              user: !{JSON.stringify(user)}, // stringify the user
+              rules: { // for validation gives an error message if invalid input
+              //setting variables so can pass back to the javascript code
+                required: value => !!value || 'Required.',
+                counter: value => value.length <= 20 || 'Max 20 characters',
+                min: v => v.length >= 8 || 'Min 8 characters',
+                numeric: v => !isNaN(v) || 'Numbers Only',
+                email: value => {
+                  const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                  return pattern.test(value) || 'Invalid e-mail.'
+                },
+              }
+            }
+        }
+        });
+    }
+block content
+  v-container
+    h1.display-2.text-xs-center.front-weight-bold Set Nutrition Goals Form
+    v-card
+      //-v-container basically makes sure the form is within the bounds of the screen and of course I could do other stuff with a v-container but this is the main purpose in thsi scenario
+      h3.display-1.text-xs-center Please Enter the Desired Amount of Each Nutrient
+      v-container
+        v-layout
+          v-flex.xs8
+            v-container
+              v-form(method='POST')
+                //-so basically this is a form where you can update weight height 
+                v-text-field(label= "Calories" name="calories" v-model='user.calorieGoal' type='number' :rules='[rules.required, rules.numeric]' )
+                v-text-field(label= "Carbohydrates" name="carbs" v-model='user.carbohydrateGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                v-text-field(label= "Protein" name="protein" v-model='user.proteinGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                v-text-field(label= "Fats" name="fats" v-model='user.fatGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                v-text-field(label= "Potassium" name="potassium" v-model='user.potassiumGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                v-text-field(label= "Vitamin A" name="vitaminA" v-model='user.vitaminAGoal' type='number' :rules='[rules.required, rules.numeric]') 
+                br
+                v-btn(type='submit' color="green") Save
+          v-flex.xs4 
+            v-container.lime
+              h2.text-xs-center Here is Your Recommended Amount
+              //- Recomended is like based on calculations of ur weight and height
+              h3.text-sm-left Calories: {{ Math.round(user.weight/2.2046 * .95 * 24 * 1.65) }} cal/day 
+              h3.text-sm-left Carbohydrates: {{ Math.round(user.weight/2.2046 * .95 * 24 * 1.65 * .55) }} cal/day
+              h3.text-sm-left Protein: {{ Math.round(user.weight/2.2046*.9) }} grams/day
+              h3.text-sm-left Fats: {{ Math.round(user.weight/2.2046 * .95 * 24 * 1.65 * .3) }} grams/day
+              h3.text-sm-left Potassium: 4500 mg/day
+              h3.text-sm-left Vitamin A: 800 mcg/day
+
+        //-----------------
+    
+//- extends layout2
+//- block head
+//-   script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js")
+//-   script.
+//-     window.onload= function(){// upon loading this page the first thing 
+//-       Vue.use("Vuetify");
+//-       new Vue({ 
+//-         el: '#app',
+//-         data: function(){
+//-             return {
+//-               user: !{JSON.stringify(user)}, // stringify the user
+//-               rules: { // for validation gives an error message if invalid input
+//-                 required: value => !!value || 'Required.',
+//-                 counter: value => value.length <= 20 || 'Max 20 characters',
+//-                 min: v => v.length >= 8 || 'Min 8 characters',
+//-                 numeric: v => !isNaN(v) || 'Numbers Only',
+//-                 email: value => {
+//-                   const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+//-                   return pattern.test(value) || 'Invalid e-mail.'
+//-                 },
+//-               }
+//-             }
+//-         },
+//-         methods:{
+//-           storeNutrients: function(){
+//-             axios.post("/index/setGoalsForm",{user:this.user});
+//-             console.log(this.user + " added");
+//-           }
+//-         }
+//-         });
+//-     }
+//- block content
+//-   h1.display-3.text-xs-center.front-weight-bold Set Goals
+//-   v-card
+//-     v-container
+//-       h3.text-xs-center  Enter the Amount of Nutrients
+//-   v-card
+//-     //-v-container basically makes sure the form is within the bounds of the screen and of course I could do other stuff with a v-container but this is the main purpose in thsi scenario
+//-     v-container
+//-         //-so basically this is a form where you can update weight height 
+//-         v-container
+//-           v-form()
+            
+          //- v-flex.xs4
+          //-   v-container.lime
+          //-     h2.text-xs-center Here is Your Recommended Amount
+          //-     h3.text-sm-left Calories: {{ Math.round(user.weight/2.2046 * .95 * 24 * 1.65) }} cal/day
+          //-     h3.text-sm-left Carbohydrates: {{ Math.round(user.weight/2.2046 * .95 * 24 * 1.65 * .55) }} kCal/day
+          //-     h3.text-sm-left Protein: {{ Math.round(user.weight/2.2046*.9) }} grams/day
+          //-     h3.text-sm-left Fats: {{ Math.round(user.weight/2.2046 * .95 * 24 * 1.65 * .3) }} grams/day
+          //-     h3.text-sm-left Potassium: 4500 mg/day
+          //-     h3.text-sm-left Vitamin A: 800 mcg/day
+          //- v-flex.xs4
+          //-   v-container(color = 'red')
+          //-     h2.text-xs-center These are Nutrient Recommendations Based on your Weight and Height 
+          //-     h2.text-xs-center This Nutrient Input will be used to Evaluate your Diet
+        
+//-
+        //- v-stepper(v-model='e1')
+        //- v-stepper-header
+        //-   v-stepper-step(:complete='e1 > 1', step='1') Select Nutrients
+        //-   v-divider
+        //-   v-stepper-step(:complete='e1 > 2', step='2') Name of step 2
+        //-   v-divider
+        //-   v-stepper-step(step='3') Name of step 3
+        //- v-stepper-items
+        //-   v-stepper-content(step='1')
+        //-     v-card.mb-5(color='lime lighten-5')
+        //-       v-container
+        //-         v-combobox(v-model='select', :items='items', label='Select Nutritional Info you wanna keep track of', multiple='', chips='')
+        //-           template(v-slot:selection='data')
+        //-             v-chip.v-chip--select-multi(:key='JSON.stringify(data.item)', :selected='data.selected', :disabled='data.disabled', @input='data.parent.selectItem(data.item)')
+        //-               v-avatar.accent.white--text(v-text='data.item.slice(0, 1).toUpperCase()')
+        //-               |               {{ data.item }}
+        //-         //-v-combobox(v-model='select', :items='itesms', label='Select a favorite activity or create a new one', multiple='')
+        //-     v-btn(color='primary', @click='e1 = 2')
+        //-       | Continue
+        //-     v-btn(flat='') Cancel
+        //-   v-stepper-content(step='2')
+        //-     v-layout
+        //-       v-container
+        //-         v-flex.xs4
+        //-           h3(v-for='(nutrient,index) in select')
+        //-             | {{ nutrient }}
+        //-             v-text-field(label= "Enter Amount", box = '', v-model = 'trial', name = nutrient, type = 'number', suffix='g/day')
+        //-       v-flex.xs4
+        //-         p Your Recommended Daily Nutritional is:
+        //-         li= 'Protein: ' + user.weight * .36 + ' grams/day'
+        //-         li= 'Carbohdrates: 300'
+        //-         li= 'Potassium: 4,500 mg/day'
+        //-         li= 'Calories: 2000 grams/day'
+        //-         li= 'Vitamin A: 590 mcg/day'
+        //-         li= 'Fats: /day'
+        //-         //- the user's weight in pounds times .36 is recommended protein intake
+        //-     v-btn(color='primary', @click='e1 = 3')
+        //-       | Continue
+        //-     v-btn(flat='') Cancel
+        //-   v-stepper-content(step='3')
+        //-     v-card.mb-5(color='lime lighten-5')
+        //-     v-btn(color='primary', @click='e1 = 1')
+        //-       | Go Back
+        //-     v-btn(flat='', color = 'error') Cancel
+        //-     v-btn(color = 'success') Save Changes

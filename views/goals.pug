@@ -1,0 +1,144 @@
+extends layout2
+block head
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js")
+  script.
+    window.onload= function(){// upon loading this page the first thing 
+      Vue.use("Vuetify");
+      new Vue({ 
+        el: '#app',
+        data: function(){
+            return {
+              user: !{JSON.stringify(user)},
+              nutritionSumItem: !{JSON.stringify(nutritionSumItem)},
+              date: new Date().toISOString().substr(0, 10),
+              lastWeekDate: new Date().toISOString().substr(0, 10),
+              headers: [//headers for data table
+                {text:"Nutrient Type", value:"Nutrient Type"},
+                {text:"Goal Amount", value:"Goal Amount"},
+                {text:"Your Weekly Average", value:"Weekly Average"},
+                {text:"Feedback", value:"Feedback"},
+              ],
+            }
+        },
+        computed: {
+          trial: function(){//add it based n the aray so everyime item changes this will too
+            console.log("AHHH");
+          } 
+        },
+        
+        });
+    }
+block content
+  v-container
+    v-layout(row='')
+      v-flex.xs10
+         h2.display-1.text-xs-center This Week's Feedback
+      v-flex.xs2
+         v-btn(color = "green lighten-1" href = '/setGoalsForm' dark) Change Goals
+         //-v-btn(color = "green lighten-1"  v-on:click="averageCarbohydrate()" dark) Test
+    v-card  
+      v-layout
+        v-flex.xs3
+          v-container(lime lighten-4)
+            br
+            h3.title.text-xs-center.font-weight-bold Nutrient Type
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light Carbohydrates
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light Calories
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light Protein
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light Potassium
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light Fats
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light Vitamin A
+        v-flex.xs3
+          v-container(blue lighten-5)
+            br
+            h3.title.text-xs-center.font-weight-bold Goal Amount
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light {{user.carbohydrateGoal}} grams/day
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light {{user.calorieGoal}} Cal/day
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light {{ user.proteinGoal }} grams/day
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light {{ user.potassiumGoal }} mg/day
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light {{ user.fatGoal }} grams/day
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light {{ user.vitaminAGoal }} mcg/day
+        //----------------------------------- AVERAGE THIS WEEK ----------------____________________________________________
+        v-flex.xs3
+          v-container(blue-grey lighten-4)
+            br
+            h3.title.text-xs-center.font-weight-bold Average this Week
+            //-v-divider
+            br
+            h3.title.text-xs-center.font-weight-light {{ nutritionSumItem.carbohydrate }} grams/day
+            br
+            h3.title.text-xs-center.font-weight-light {{ nutritionSumItem.calories }} Cal/day
+            br
+            h3.title.text-xs-center.font-weight-light {{ nutritionSumItem.protein }} grams/day
+            br
+            h3.title.text-xs-center.font-weight-light {{ nutritionSumItem.potassium }} mg/day
+            br
+            h3.title.text-xs-center.font-weight-light {{ nutritionSumItem.fat }} grams/day
+            br
+            h3.title.text-xs-center.font-weight-light {{ nutritionSumItem.vitaminA }} mcg/day
+        v-flex.xs3
+          v-container(yellow lighten-4)
+            br
+            h3.title.text-xs-center.front-weight-light Goal Reached?
+            //-yout ate more than the goal amount
+            //- Carbs
+            br
+            if(nutritionSumItem.carbohydrate > user.carbohydrateGoal) 
+              p.title.text-xs-center.font-weight-light  Met Goal
+            else
+              p.title.text-xs-center.font-weight-light  Eat More
+            //- Calories
+            if(nutritionSumItem.calories > user.calories) 
+              p.title.text-xs-center.font-weight-light  Met Goal
+            else
+              p.title.text-xs-center.font-weight-light  Eat More
+            //- protein
+            if(nutritionSumItem.protein > user.protein) 
+              p.title.text-xs-center.font-weight-light  Met Goal
+            else
+              p.title.text-xs-center.font-weight-light Eat More
+            //- potasium
+            if(nutritionSumItem.potassium > user.potassiumGoal) 
+              p.title.text-xs-center.font-weight-light  Met Goal
+            else
+              p.title.text-xs-center.font-weight-light Eat More
+            //-fat
+            if(nutritionSumItem.fat > user.fat) 
+              p.title.text-xs-center.font-weight-light Met Goal
+            else
+              p.title.text-xs-center.font-weight-light Eat More
+            //- Vitamin A
+            if(nutritionSumItem.vitaminA > user.vitaminA) 
+              p.title.text-xs-center.font-weight-light Met Goal
+            else
+              p.title.text-xs-center.font-weight-light Eat More
+            
+
+        
+        
+
+          
